@@ -7,5 +7,54 @@
     <script src="./index.js" defer></script>
     <title>Calculator</title>
   </head>
-  <body></body>
+  <body>
+    <div class="container">
+      <div class="top">
+        <label class="display-label">
+          <input type="text" class="display-input" placeholder="0" />
+        </label>
+      </div>
+      <div class="bottom">
+        <div class="bottom-controls">
+          <div class="button button_orange" type="button"><span class="number">⌫</span></div>
+          <div class="button button_orange" type="button"><span class="number">С</span></div>
+        </div>
+
+        <div class="bottom-buttons">
+          <div class="bottom-numbers">
+            <div class="numbers">
+              <div class="button" type="button" data-value="1"><span class="number">1</span></div>
+              <div class="button" type="button" data-value="2"><span class="number">2</span></div>
+              <div class="button" type="button" data-value="3"><span class="number">3</span></div>
+              <div class="button" type="button" data-value="4"><span class="number">4</span></div>
+              <div class="button" type="button" data-value="5"><span class="number">5</span></div>
+              <div class="button" type="button" data-value="6"><span class="number">6</span></div>
+              <div class="button" type="button" data-value="7"><span class="number">7</span></div>
+              <div class="button" type="button" data-value="8"><span class="number">8</span></div>
+              <div class="button" type="button" data-value="9"><span class="number">9</span></div>
+              <div class="button" type="button" data-value="0"><span class="number">0</span></div>
+              <div class="button" type="button" data-value="."><span class="number">.</span></div>
+              <div class="button button_orange" data-value="."><span class="number">=</span></div>
+            </div>
+          </div>
+          <div class="bottom-operators">
+            <div class="operators">
+              <div class="button button_black" type="button" data-operator="+">
+                <span class="number">+</span>
+              </div>
+              <div class="button button_black" type="button" data-operator="-">
+                <span class="number">-</span>
+              </div>
+              <div class="button button_black" type="button" data-operator="*">
+                <span class="number">*</span>
+              </div>
+              <div class="button button_black" type="button" data-operator="/">
+                <span class="number">/</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

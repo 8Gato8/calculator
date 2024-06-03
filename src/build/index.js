@@ -1,7 +1,4 @@
 "use strict";
-const firstNumber = 7;
-const secondNumber = 9;
-const operator = '*';
 const add = function (firstSummand, secondSummand) {
     return firstSummand + secondSummand;
 };
@@ -28,4 +25,3 @@ const operate = function (firstNumber, secondNumber, operator) {
             return 'This type of operation is not supported';
     }
 };
-console.log(operate(firstNumber, secondNumber, operator));
