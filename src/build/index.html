@@ -16,41 +16,44 @@
       </div>
       <div class="bottom">
         <div class="bottom-controls">
-          <div class="button button_orange" type="button"><span class="number">⌫</span></div>
-          <div class="button button_orange" type="button"><span class="number">С</span></div>
+          <div class="reset-controls">
+            <button id="erase" class="button button_orange" type="button">⌫</button>
+            <button id="reset" class="button button_orange" type="button">С</button>
+          </div>
+
+          <button id="equals" class="button button_orange" type="button" data-value="=">=</button>
         </div>
 
         <div class="bottom-buttons">
           <div class="bottom-numbers">
             <div class="numbers">
-              <div class="button" type="button" data-value="1"><span class="number">1</span></div>
-              <div class="button" type="button" data-value="2"><span class="number">2</span></div>
-              <div class="button" type="button" data-value="3"><span class="number">3</span></div>
-              <div class="button" type="button" data-value="4"><span class="number">4</span></div>
-              <div class="button" type="button" data-value="5"><span class="number">5</span></div>
-              <div class="button" type="button" data-value="6"><span class="number">6</span></div>
-              <div class="button" type="button" data-value="7"><span class="number">7</span></div>
-              <div class="button" type="button" data-value="8"><span class="number">8</span></div>
-              <div class="button" type="button" data-value="9"><span class="number">9</span></div>
-              <div class="button" type="button" data-value="0"><span class="number">0</span></div>
-              <div class="button" type="button" data-value="."><span class="number">.</span></div>
-              <div class="button button_orange" data-value="."><span class="number">=</span></div>
+              <button id="one" class="button" type="button" data-value="1">1</button>
+              <button id="two" class="button" type="button" data-value="2">2</button>
+              <button id="three" class="button" type="button" data-value="3">3</button>
+              <button id="four" class="button" type="button" data-value="4">4</button>
+              <button id="five" class="button" type="button" data-value="5">5</button>
+              <button id="six" class="button" type="button" data-value="6">6</button>
+              <button id="seven" class="button" type="button" data-value="7">7</button>
+              <button id="eigth" class="button" type="button" data-value="8">8</button>
+              <button id="nine" class="button" type="button" data-value="9">9</button>
+              <button id="zero" class="button" type="button" data-value="0">0</button>
+              <button id="dot" class="button" type="button" data-value=".">.</button>
             </div>
           </div>
           <div class="bottom-operators">
             <div class="operators">
-              <div class="button button_black" type="button" data-operator="+">
-                <span class="number">+</span>
-              </div>
-              <div class="button button_black" type="button" data-operator="-">
-                <span class="number">-</span>
-              </div>
-              <div class="button button_black" type="button" data-operator="*">
-                <span class="number">*</span>
-              </div>
-              <div class="button button_black" type="button" data-operator="/">
-                <span class="number">/</span>
-              </div>
+              <button id="plus" class="button button_black" type="button" data-operator="+">
+                +
+              </button>
+              <button id="minus" class="button button_black" type="button" data-operator="-">
+                -
+              </button>
+              <button id="multiply" class="button button_black" type="button" data-operator="*">
+                *
+              </button>
+              <button id="buttonide" class="button button_black" type="button" data-operator="/">
+                /
+              </button>
             </div>
           </div>
         </div>
