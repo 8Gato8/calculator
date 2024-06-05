@@ -1,11 +1,8 @@
-import { add } from './ add';
-import { subtract } from './subtract';
-import { multiply } from './multiply';
-import { divide } from './divide';
-
-type TOperate = (first: number, second: number, operator: string) => number | string;
-
-export const operate: TOperate = function (firstNumber, secondNumber, operator) {
+import { add } from './ add.js';
+import { subtract } from './subtract.js';
+import { multiply } from './multiply.js';
+import { divide } from './divide.js';
+export const operate = function (firstNumber, secondNumber, operator) {
   switch (operator) {
     case '+':
       return add(firstNumber, secondNumber);
