@@ -12,21 +12,11 @@ body {
 .container {
   margin: auto;
   width: 450px;
-  min-height: 645px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 15px;
-}
-
-.display-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  border: 1px solid #dfdfdf;
-  border-radius: 4px;
-  padding: 15px;
 }
 
 .display-input {
