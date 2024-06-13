@@ -1,122 +1,106 @@
 import { operate } from './functions/operate.js';
 
-let firstValue = null;
-let secondValue = null;
+let firstValue = '';
+let secondValue = '';
 let operator = null;
 
-const validOperators = ['+', '-', '*', '/'];
-const validNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+let activeOperator = null;
 
-const displayInput = document.querySelector('.display-input');
-const displayResult = document.querySelector('.display-result');
-
+const displayPanel = document.querySelector('.display-panel');
 const numbersContainer = document.querySelector('.numbers');
 const operatorsContainer = document.querySelector('.operators');
-const operatorsButtons = document.querySelectorAll('.operators .button');
+const operators = document.querySelectorAll('.operators .button');
+const switchSign = document.querySelector('#switch-sign');
 const equals = document.querySelector('#equals');
-const erase = document.querySelector('#erase');
 const reset = document.querySelector('#reset');
 
-function eraseLastChar(string) {
-  return string.substring(0, string.length - 1);
+function isExpressionComplete() {
+  if (firstValue && secondValue && operator) return true;
+  return false;
 }
 
 numbersContainer.addEventListener('click', (e) => {
   if (e.target === e.currentTarget) return;
-  const numberButton = e.target;
-  const numberButtonValue = +numberButton.dataset.value;
-  displayInput.value += numberButtonValue;
 
-  displayInput.dispatchEvent(new Event('input', { bubbles: true }));
-});
+  activeOperator = null;
 
-function isValidString(string) {
-  const array = Array.from(string);
+  operators.forEach((operator) => operator.classList.remove('button_black_active'));
 
-  return array.every((char) => validNumbers.includes(char));
-}
+  const numberString = e.target.dataset.value;
 
-function parseInputValue(inputValue) {
-  const array = Array.from(inputValue);
-
-  const operatorValue = array.find((char) => validOperators.includes(char));
-  const operatorIndex = array.indexOf(operatorValue);
-
-  operator = operatorValue ?? null;
-
-  if (operatorValue && inputValue) {
-    /* isValidString в этом месте может вызвать проблемы в будущем */
-    firstValue = isValidString(inputValue.slice(0, operatorIndex))
-      ? inputValue.slice(0, operatorIndex)
-      : null;
-  } else if (inputValue) {
-    firstValue = inputValue;
+  if (firstValue && operator) {
+    secondValue += numberString;
+    displayPanel.textContent = secondValue;
   } else {
-    firstValue = null;
+    firstValue += numberString;
+    displayPanel.textContent = firstValue;
   }
 
-  if (firstValue && operator && isValidString(inputValue.slice(operatorIndex + 1))) {
-    secondValue = inputValue.slice(operatorIndex + 1);
+  if (isExpressionComplete()) {
+    equals.removeAttribute('disabled');
   } else {
-    secondValue = null;
+    equals.setAttribute('disabled', '');
   }
-}
-
-displayInput.addEventListener('input', () => {
-  parseInputValue(displayInput.value);
 
   console.log(firstValue, secondValue, operator);
-
-  if (firstValue && secondValue && operator) equals.removeAttribute('disabled');
-  else equals.setAttribute('disabled', '');
-
-  if (firstValue) {
-    erase.removeAttribute('disabled');
-    operatorsButtons.forEach((operator) => operator.removeAttribute('disabled'));
-  } else {
-    erase.setAttribute('disabled', '');
-    operatorsButtons.forEach((operator) => operator.setAttribute('disabled', ''));
-  }
 });
 
 operatorsContainer.addEventListener('click', (e) => {
-  const operatorButton = e.target;
-  const operatorButtonValue = operatorButton.dataset.operator;
+  const currentOperator = e.target;
 
-  if (operator) {
-    const result = operate(+firstValue, +secondValue, operator);
-    displayInput.value = result.toString();
-    displayResult.textContent = result.toString();
-    firstValue = result;
-    secondValue = null;
+  if (currentOperator === e.currentTarget) return;
+
+  if (firstValue) {
+    activeOperator = currentOperator;
+
+    operators.forEach((operator) => {
+      if (operator === activeOperator) operator.classList.add('button_black_active');
+      else operator.classList.remove('button_black_active');
+    });
   }
 
-  displayInput.value += operatorButtonValue;
-  displayInput.dispatchEvent(new Event('input', { bubbles: true }));
+  if (isExpressionComplete()) {
+    const result = parseFloat(operate(+firstValue, +secondValue, operator).toFixed(4));
+
+    displayPanel.textContent = result.toString();
+    firstValue = result.toString();
+    secondValue = '';
+
+    equals.setAttribute('disabled', '');
+  }
+
+  const newOperator = currentOperator.dataset.operator;
+  operator = newOperator;
+
+  console.log(firstValue, secondValue, operator);
 });
 
 equals.addEventListener('click', () => {
-  const result = operate(+firstValue, +secondValue, operator);
-  displayInput.value = '';
-  displayResult.textContent = result.toString();
-  firstValue = null;
-  secondValue = null;
+  const result = parseFloat(operate(+firstValue, +secondValue, operator).toFixed(4));
+
+  displayPanel.textContent = result.toString();
+  firstValue = result.toString();
+  secondValue = '';
   operator = null;
-  displayInput.dispatchEvent(new Event('input', { bubbles: true }));
+  activeOperator = null;
+  equals.setAttribute('disabled', '');
 });
 
 reset.addEventListener('click', () => {
-  displayInput.value = '';
-  displayResult.textContent = '';
-  firstValue = null;
-  secondValue = null;
+  firstValue = '';
+  secondValue = '';
   operator = null;
-
-  displayInput.dispatchEvent(new Event('input', { bubbles: true }));
+  activeOperator = null;
+  displayPanel.textContent = '0';
+  equals.setAttribute('disabled', '');
 });
 
-erase.addEventListener('click', () => {
-  displayInput.value = eraseLastChar(displayInput.value);
-
-  displayInput.dispatchEvent(new Event('input', { bubbles: true }));
+switchSign.addEventListener('click', () => {
+  if (firstValue && secondValue && operator) {
+    secondValue = secondValue.startsWith('-') ? secondValue : `-${secondValue}`;
+    displayPanel.textContent = secondValue;
+  } else if (firstValue) {
+    firstValue = firstValue.startsWith('-') ? firstValue : `-${firstValue}`;
+    displayPanel.textContent = firstValue;
+  }
 });
