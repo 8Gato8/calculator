@@ -13,11 +13,17 @@ const operators = document.querySelectorAll('.operators .button');
 const dotSign = document.querySelector('#dot');
 const switchSign = document.querySelector('#switch-sign');
 const equals = document.querySelector('#equals');
+const erase = document.querySelector('#erase');
 const reset = document.querySelector('#reset');
 
+const hasDotRegex = /\./;
 const validIntegerValueRegex = /\d/g;
-const validNumbersRegex = /\d|\./;
+const validNumbersRegex = /^(\d|\.)$/;
 const validOperatorsRegex = /[-+*/]/;
+
+function eraseLastChar(string) {
+  return string.slice(0, string.length - 1);
+}
 
 function isExpressionComplete() {
   if (firstValue && secondValue && operator) return true;
@@ -25,15 +31,11 @@ function isExpressionComplete() {
 }
 
 function canInsertDot(string) {
-  return string !== '' && string[string.length - 1] !== '.' && !/\./.test(string);
+  return string !== '' && string[string.length - 1] !== '.' && !hasDotRegex.test(string);
 }
 
 numbersContainer.addEventListener('click', (e) => {
   if (e.target === e.currentTarget) return;
-
-  activeOperator = null;
-
-  operators.forEach((operator) => operator.classList.remove('button_black_active'));
 
   const numberString = e.target.dataset.value;
 
@@ -43,6 +45,12 @@ numbersContainer.addEventListener('click', (e) => {
   } else {
     firstValue += numberString;
     displayPanel.textContent = firstValue;
+  }
+
+  if (displayPanel.textContent !== '') {
+    erase.removeAttribute('disabled');
+  } else {
+    erase.setAttribute('disabled', '');
   }
 
   if (canInsertDot(displayPanel.textContent)) {
@@ -81,6 +89,7 @@ operatorsContainer.addEventListener('click', (e) => {
 
     dotSign.setAttribute('disabled', '');
     equals.setAttribute('disabled', '');
+    erase.setAttribute('disabled', '');
   }
 
   const newOperator = currentOperator.dataset.operator;
@@ -94,8 +103,10 @@ equals.addEventListener('click', () => {
     secondValue = '';
     operator = null;
     activeOperator = null;
+    operators.forEach((operator) => operator.classList.remove('button_black_active'));
     dotSign.setAttribute('disabled', '');
     equals.setAttribute('disabled', '');
+    erase.setAttribute('disabled', '');
     return;
   }
 
@@ -106,8 +117,16 @@ equals.addEventListener('click', () => {
   secondValue = '';
   operator = null;
   activeOperator = null;
-  dotSign.setAttribute('disabled', '');
+  operators.forEach((operator) => operator.classList.remove('button_black_active'));
+
+  if (canInsertDot(displayPanel.textContent)) {
+    dotSign.removeAttribute('disabled');
+  } else {
+    dotSign.setAttribute('disabled', '');
+  }
+
   equals.setAttribute('disabled', '');
+  erase.setAttribute('disabled', '');
 });
 
 reset.addEventListener('click', () => {
@@ -115,9 +134,21 @@ reset.addEventListener('click', () => {
   secondValue = '';
   operator = null;
   activeOperator = null;
+  operators.forEach((operator) => operator.classList.remove('button_black_active'));
   displayPanel.textContent = '0';
   dotSign.setAttribute('disabled', '');
   equals.setAttribute('disabled', '');
+  erase.setAttribute('disabled', '');
+});
+
+erase.addEventListener('click', () => {
+  if (firstValue && operator && secondValue) {
+    secondValue = eraseLastChar(secondValue);
+    displayPanel.textContent = secondValue;
+  } else if (firstValue) {
+    firstValue = eraseLastChar(firstValue);
+    displayPanel.textContent = firstValue;
+  }
 });
 
 switchSign.addEventListener('click', () => {
@@ -144,18 +175,18 @@ window.addEventListener('keydown', (e) => {
   const key = e.key;
   if (!validNumbersRegex.test(key)) return;
 
-  console.log(key);
-
-  activeOperator = null;
-
-  operators.forEach((operator) => operator.classList.remove('button_black_active'));
-
   if (firstValue && operator) {
     secondValue += key;
     displayPanel.textContent = secondValue;
   } else {
     firstValue += key;
     displayPanel.textContent = firstValue;
+  }
+
+  if (displayPanel.textContent !== '') {
+    erase.removeAttribute('disabled');
+  } else {
+    erase.setAttribute('disabled', '');
   }
 
   if (canInsertDot(displayPanel.textContent)) {
@@ -212,8 +243,10 @@ window.addEventListener('keydown', (e) => {
     secondValue = '';
     operator = null;
     activeOperator = null;
+    operators.forEach((operator) => operator.classList.remove('button_black_active'));
     dotSign.setAttribute('disabled', '');
     equals.setAttribute('disabled', '');
+    erase.setAttribute('disabled', '');
     return;
   }
 
@@ -224,8 +257,16 @@ window.addEventListener('keydown', (e) => {
   secondValue = '';
   operator = null;
   activeOperator = null;
-  dotSign.setAttribute('disabled', '');
+  operators.forEach((operator) => operator.classList.remove('button_black_active'));
+
+  if (canInsertDot(displayPanel.textContent)) {
+    dotSign.removeAttribute('disabled');
+  } else {
+    dotSign.setAttribute('disabled', '');
+  }
+
   equals.setAttribute('disabled', '');
+  erase.setAttribute('disabled', '');
 });
 
 window.addEventListener('keydown', (e) => {
@@ -233,11 +274,27 @@ window.addEventListener('keydown', (e) => {
 
   if (key !== 'Backspace') return;
 
+  if (firstValue && operator && secondValue) {
+    secondValue = eraseLastChar(secondValue);
+    displayPanel.textContent = secondValue;
+  } else if (firstValue) {
+    firstValue = eraseLastChar(firstValue);
+    displayPanel.textContent = firstValue;
+  }
+});
+
+window.addEventListener('keydown', (e) => {
+  const key = e.key;
+
+  if (key !== 'r') return;
+
   firstValue = '';
   secondValue = '';
   operator = null;
   activeOperator = null;
+  operators.forEach((operator) => operator.classList.remove('button_black_active'));
   displayPanel.textContent = '0';
   dotSign.setAttribute('disabled', '');
   equals.setAttribute('disabled', '');
+  erase.setAttribute('disabled', '');
 });
