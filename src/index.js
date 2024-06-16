@@ -97,10 +97,19 @@ reset.addEventListener('click', () => {
 
 switchSign.addEventListener('click', () => {
   if (firstValue && secondValue && operator) {
-    secondValue = secondValue.startsWith('-') ? secondValue : `-${secondValue}`;
+    if (secondValue.startsWith('-')) {
+      secondValue = secondValue.slice(1);
+    } else {
+      secondValue = `-${secondValue}`;
+    }
+
     displayPanel.textContent = secondValue;
   } else if (firstValue) {
-    firstValue = firstValue.startsWith('-') ? firstValue : `-${firstValue}`;
+    if (firstValue.startsWith('-')) {
+      firstValue = firstValue.slice(1);
+    } else {
+      firstValue = `-${firstValue}`;
+    }
     displayPanel.textContent = firstValue;
   }
 });
