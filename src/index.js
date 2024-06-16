@@ -10,6 +10,7 @@ const displayPanel = document.querySelector('.display-panel');
 const numbersContainer = document.querySelector('.numbers');
 const operatorsContainer = document.querySelector('.operators');
 const operators = document.querySelectorAll('.operators .button');
+const dotSign = document.querySelector('#dot');
 const switchSign = document.querySelector('#switch-sign');
 const equals = document.querySelector('#equals');
 const reset = document.querySelector('#reset');
@@ -17,6 +18,10 @@ const reset = document.querySelector('#reset');
 function isExpressionComplete() {
   if (firstValue && secondValue && operator) return true;
   return false;
+}
+
+function canInsertDot(string) {
+  return string !== '' && string[string.length - 1] !== '.' && !/\./.test(string);
 }
 
 numbersContainer.addEventListener('click', (e) => {
@@ -34,6 +39,12 @@ numbersContainer.addEventListener('click', (e) => {
   } else {
     firstValue += numberString;
     displayPanel.textContent = firstValue;
+  }
+
+  if (canInsertDot(displayPanel.textContent)) {
+    dotSign.removeAttribute('disabled');
+  } else {
+    dotSign.setAttribute('disabled', '');
   }
 
   if (isExpressionComplete()) {
@@ -64,6 +75,7 @@ operatorsContainer.addEventListener('click', (e) => {
     firstValue = result.toString();
     secondValue = '';
 
+    dotSign.setAttribute('disabled', '');
     equals.setAttribute('disabled', '');
   }
 
@@ -78,6 +90,7 @@ equals.addEventListener('click', () => {
     secondValue = '';
     operator = null;
     activeOperator = null;
+    dotSign.setAttribute('disabled', '');
     equals.setAttribute('disabled', '');
     return;
   }
@@ -89,6 +102,7 @@ equals.addEventListener('click', () => {
   secondValue = '';
   operator = null;
   activeOperator = null;
+  dotSign.setAttribute('disabled', '');
   equals.setAttribute('disabled', '');
 });
 
@@ -98,13 +112,14 @@ reset.addEventListener('click', () => {
   operator = null;
   activeOperator = null;
   displayPanel.textContent = '0';
+  dotSign.setAttribute('disabled', '');
   equals.setAttribute('disabled', '');
 });
 
 switchSign.addEventListener('click', () => {
   if (firstValue && secondValue && operator) {
     if (secondValue.startsWith('-')) {
-      econdValue = '';
+      secondValue = '';
     } else {
       secondValue = `-${secondValue}`;
     }
@@ -116,6 +131,7 @@ switchSign.addEventListener('click', () => {
     } else {
       firstValue = `-${firstValue}`;
     }
+
     displayPanel.textContent = firstValue;
   }
 });
