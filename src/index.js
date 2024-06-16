@@ -41,8 +41,6 @@ numbersContainer.addEventListener('click', (e) => {
   } else {
     equals.setAttribute('disabled', '');
   }
-
-  console.log(firstValue, secondValue, operator);
 });
 
 operatorsContainer.addEventListener('click', (e) => {
@@ -71,11 +69,19 @@ operatorsContainer.addEventListener('click', (e) => {
 
   const newOperator = currentOperator.dataset.operator;
   operator = newOperator;
-
-  console.log(firstValue, secondValue, operator);
 });
 
 equals.addEventListener('click', () => {
+  if (/\d/g.test(firstValue) && secondValue === '0' && operator === '/') {
+    displayPanel.textContent = "You can't divide by zero, silly)";
+    firstValue = '';
+    secondValue = '';
+    operator = null;
+    activeOperator = null;
+    equals.setAttribute('disabled', '');
+    return;
+  }
+
   const result = parseFloat(operate(+firstValue, +secondValue, operator).toFixed(4));
 
   displayPanel.textContent = result.toString();
@@ -98,7 +104,7 @@ reset.addEventListener('click', () => {
 switchSign.addEventListener('click', () => {
   if (firstValue && secondValue && operator) {
     if (secondValue.startsWith('-')) {
-      secondValue = secondValue.slice(1);
+      econdValue = '';
     } else {
       secondValue = `-${secondValue}`;
     }
