@@ -15,6 +15,10 @@ const switchSign = document.querySelector('#switch-sign');
 const equals = document.querySelector('#equals');
 const reset = document.querySelector('#reset');
 
+const validIntegerValueRegex = /\d/g;
+const validNumbersRegex = /\d|\./;
+const validOperatorsRegex = /[-+*/]/;
+
 function isExpressionComplete() {
   if (firstValue && secondValue && operator) return true;
   return false;
@@ -84,7 +88,7 @@ operatorsContainer.addEventListener('click', (e) => {
 });
 
 equals.addEventListener('click', () => {
-  if (/\d/g.test(firstValue) && secondValue === '0' && operator === '/') {
+  if (validIntegerValueRegex.test(firstValue) && secondValue === '0' && operator === '/') {
     displayPanel.textContent = "You can't divide by zero, silly)";
     firstValue = '';
     secondValue = '';
@@ -134,4 +138,106 @@ switchSign.addEventListener('click', () => {
 
     displayPanel.textContent = firstValue;
   }
+});
+
+window.addEventListener('keydown', (e) => {
+  const key = e.key;
+  if (!validNumbersRegex.test(key)) return;
+
+  console.log(key);
+
+  activeOperator = null;
+
+  operators.forEach((operator) => operator.classList.remove('button_black_active'));
+
+  if (firstValue && operator) {
+    secondValue += key;
+    displayPanel.textContent = secondValue;
+  } else {
+    firstValue += key;
+    displayPanel.textContent = firstValue;
+  }
+
+  if (canInsertDot(displayPanel.textContent)) {
+    dotSign.removeAttribute('disabled');
+  } else {
+    dotSign.setAttribute('disabled', '');
+  }
+
+  if (isExpressionComplete()) {
+    equals.removeAttribute('disabled');
+  } else {
+    equals.setAttribute('disabled', '');
+  }
+});
+
+window.addEventListener('keydown', (e) => {
+  const key = e.key;
+
+  if (!validOperatorsRegex.test(key)) return;
+
+  if (firstValue) {
+    activeOperator = key;
+
+    operators.forEach((operator) => {
+      if (operator.dataset.operator === activeOperator)
+        operator.classList.add('button_black_active');
+      else operator.classList.remove('button_black_active');
+    });
+  }
+
+  if (isExpressionComplete()) {
+    const result = parseFloat(operate(+firstValue, +secondValue, operator).toFixed(4));
+
+    displayPanel.textContent = result.toString();
+    firstValue = result.toString();
+    secondValue = '';
+
+    dotSign.setAttribute('disabled', '');
+    equals.setAttribute('disabled', '');
+  }
+
+  const newOperator = key;
+  operator = newOperator;
+});
+
+window.addEventListener('keydown', (e) => {
+  const key = e.key;
+
+  if (key !== 'Enter') return;
+
+  if (validIntegerValueRegex.test(firstValue) && secondValue === '0' && operator === '/') {
+    displayPanel.textContent = "You can't divide by zero, silly)";
+    firstValue = '';
+    secondValue = '';
+    operator = null;
+    activeOperator = null;
+    dotSign.setAttribute('disabled', '');
+    equals.setAttribute('disabled', '');
+    return;
+  }
+
+  const result = parseFloat(operate(+firstValue, +secondValue, operator).toFixed(4));
+
+  displayPanel.textContent = result.toString();
+  firstValue = result.toString();
+  secondValue = '';
+  operator = null;
+  activeOperator = null;
+  dotSign.setAttribute('disabled', '');
+  equals.setAttribute('disabled', '');
+});
+
+window.addEventListener('keydown', (e) => {
+  const key = e.key;
+
+  if (key !== 'Backspace') return;
+
+  firstValue = '';
+  secondValue = '';
+  operator = null;
+  activeOperator = null;
+  displayPanel.textContent = '0';
+  dotSign.setAttribute('disabled', '');
+  equals.setAttribute('disabled', '');
 });
