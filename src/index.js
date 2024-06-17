@@ -22,7 +22,7 @@ const validNumbersRegex = /^(\d|\.)$/;
 const validOperatorsRegex = /[-+*/]/;
 
 function eraseLastChar(string) {
-  return string.length > 1 ? string.slice(0, string.length - 1) : '0';
+  return string.slice(0, string.length - 1);
 }
 
 function hasDot(string) {
@@ -38,30 +38,39 @@ function isLastCharDot(string) {
   return string[string.length - 1] === '.';
 }
 
+function isStringEmpty(string) {
+  return string.length < 1;
+}
 function isTryingToDivideByZero(firstValue, secondValue, operator) {
   return validIntegerValueRegex.test(firstValue) && secondValue === '0' && operator === '/';
 }
 
 function canInsertDot(string) {
-  return !hasDot(string) && !isLastCharDot(string);
+  return !hasDot(string) && !isLastCharDot(string) && !isStringEmpty(string);
+}
+
+function switchDotSignDisabledState() {
+  if (canInsertDot(displayPanel.textContent)) {
+    dotSign.removeAttribute('disabled');
+  } else {
+    dotSign.setAttribute('disabled', '');
+  }
 }
 
 /* handler functions */
 
 function handleNumberInput(input) {
   if (firstValue && operator) {
-    secondValue = secondValue === '0' ? input : secondValue + input;
+    secondValue = secondValue === '0' && input !== '.' ? input : secondValue + input;
     displayPanel.textContent = secondValue;
   } else {
-    firstValue = firstValue === '0' ? input : firstValue + input;
+    firstValue = firstValue === '0' && input !== '.' ? input : firstValue + input;
     displayPanel.textContent = firstValue;
   }
 
-  if (canInsertDot(displayPanel.textContent)) {
-    dotSign.removeAttribute('disabled');
-  } else {
-    dotSign.setAttribute('disabled', '');
-  }
+  console.log(firstValue, secondValue);
+
+  switchDotSignDisabledState();
 
   if (isExpressionComplete()) {
     equals.removeAttribute('disabled');
@@ -70,7 +79,7 @@ function handleNumberInput(input) {
   }
 }
 
-function handleOperatorSelection(newOperator) {
+function handleOperatorInput(newOperator) {
   if (firstValue) {
     activeOperator = newOperator;
 
@@ -95,7 +104,7 @@ function handleOperatorSelection(newOperator) {
   operator = newOperator;
 }
 
-function handleEqualsClick() {
+function handleEqualsOperate() {
   if (isTryingToDivideByZero(firstValue, secondValue, operator)) {
     displayPanel.textContent = "You can't divide by zero, silly)";
     firstValue = '';
@@ -120,18 +129,18 @@ function handleEqualsClick() {
   equals.setAttribute('disabled', '');
 }
 
-function handleResetClick() {
+function handleResetOperate() {
   firstValue = '';
   secondValue = '';
   operator = null;
   activeOperator = null;
   operators.forEach((operator) => operator.classList.remove('button_black_active'));
-  displayPanel.textContent = '0';
-  dotSign.setAttribute('disabled', '');
+  displayPanel.textContent = '';
   equals.setAttribute('disabled', '');
+  dotSign.setAttribute('disabled', '');
 }
 
-function handleEraseClick() {
+function handleEraseOperate() {
   if (firstValue && operator && secondValue) {
     secondValue = eraseLastChar(secondValue);
     displayPanel.textContent = secondValue;
@@ -139,6 +148,8 @@ function handleEraseClick() {
     firstValue = eraseLastChar(firstValue);
     displayPanel.textContent = firstValue;
   }
+
+  switchDotSignDisabledState();
 }
 
 function handleSwitchSignClick() {
@@ -173,7 +184,7 @@ numbersContainer.addEventListener('click', (e) => {
 
 window.addEventListener('keydown', (e) => {
   const key = e.key;
-  if (!validNumbersRegex.test(key)) return;
+  if (!validNumbersRegex.test(key) || (key === '.' && dotSign.hasAttribute('disabled'))) return;
 
   handleNumberInput(key);
 });
@@ -187,7 +198,7 @@ operatorsContainer.addEventListener('click', (e) => {
 
   const newOperator = target.dataset.operator;
 
-  handleOperatorSelection(newOperator);
+  handleOperatorInput(newOperator);
 });
 
 window.addEventListener('keydown', (e) => {
@@ -195,43 +206,43 @@ window.addEventListener('keydown', (e) => {
 
   if (!validOperatorsRegex.test(newOperator)) return;
 
-  handleOperatorSelection(newOperator);
+  handleOperatorInput(newOperator);
 });
 
 /* equals event listeners */
 
-equals.addEventListener('click', handleEqualsClick);
+equals.addEventListener('click', handleEqualsOperate);
 
 window.addEventListener('keydown', (e) => {
   const key = e.key;
 
-  if (key !== 'Enter') return;
+  if (key !== 'Enter' || equals.hasAttribute('disabled')) return;
 
-  handleEqualsClick();
+  handleEqualsOperate();
 });
 
 /* reset event listeners */
 
-reset.addEventListener('click', handleResetClick);
+reset.addEventListener('click', handleResetOperate);
 
 window.addEventListener('keydown', (e) => {
   const key = e.key;
 
   if (key !== 'r') return;
 
-  handleResetClick();
+  handleResetOperate();
 });
 
 /* erase event listeners */
 
-erase.addEventListener('click', handleEraseClick);
+erase.addEventListener('click', handleEraseOperate);
 
 window.addEventListener('keydown', (e) => {
   const key = e.key;
 
   if (key !== 'Backspace') return;
 
-  handleEraseClick();
+  handleEraseOperate();
 });
 
 /* switchSign event listener */
